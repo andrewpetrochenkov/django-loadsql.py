@@ -14,6 +14,13 @@ MODULE_NAME = "django_loadsql"
 PROG_NAME = 'python -m %s' % MODULE_NAME
 USAGE = 'python -m %s path ...' % MODULE_NAME
 
+def print_output(cursor):
+    try:
+        for row in cursor.fetchall():
+            if row:
+                print('|'.join(row))
+    except:
+        pass
 
 @click.command()
 @click.argument('paths',nargs=-1)
@@ -22,7 +29,8 @@ def _cli(paths):
     cursor = connection.cursor()
     for path in paths:
         sql = open(path).read()
-    cursor.execute(sql)
+        cursor.execute(sql)
+        print_output(cursor)
 
 if __name__ == '__main__':
     _cli(prog_name=PROG_NAME)
